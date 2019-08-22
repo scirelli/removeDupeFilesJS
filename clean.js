@@ -20,8 +20,10 @@ fs.readdir(argPath, function(err, items) {
         p = path.join(argPath, items[i]);
 
         try{
-            r = execSync('md5 -q "' + p + '"').toString();
-            process.stdout.write(r);
+	    if(fs.lstatSync(p).isDirectory()) continue;
+            r = execSync('md5sum "' + p + '"').toString();
+            process.stdout.write(r + '\n');
+	    r = r.split(' ')[0];
             if(!hashTable[r]){
                 hashTable[r] = true;
             }else{
