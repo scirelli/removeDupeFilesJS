@@ -1,0 +1,26 @@
+{
+  "name": "removedupesjs",
+  "version": "1.0.0",
+  "description": "Creating something to clean up my ROMs folder.",
+  "main": "clean.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scirelli/removeDupeFilesJS.git"
+  },
+  "keywords": [
+    "remove",
+    "dupes"
+  ],
+  "author": "Steve Cirelli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scirelli/removeDupeFilesJS/issues"
+  },
+  "homepage": "https://github.com/scirelli/removeDupeFilesJS#readme",
+  "dependencies": {
+    "fast-xml-parser": "^3.12.20"
+  }
+}

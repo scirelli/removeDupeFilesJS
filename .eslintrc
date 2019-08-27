@@ -1,0 +1,68 @@
+{
+   "env": {
+       "es6": true,
+       "node": true
+   },
+
+   "extends": [
+       "eslint:recommended"
+   ],
+
+   "globals": {
+       "process": false,
+       "jasmine": false,
+       "spyOn": false,
+       "_": false,
+       "module": false,
+       "require": false,
+       "describe": false,
+       "xdescribe": false,
+       "beforeEach": false,
+       "afterEach": false,
+       "beforeAll": false,
+       "afterAll": false,
+       "before": false,
+       "after": false,
+       "it": false,
+       "xit": false,
+       "expect": false,
+       "inject": false,
+       "__dirname": false
+   },
+
+   "rules": {
+       "indent": [
+            "error", 4, 
+            { 
+                "SwitchCase": 1,
+                "VariableDeclarator": {
+                    "var": 1,
+                    "let": 1,
+                    "const": 1
+                },
+                "outerIIFEBody": 1,
+                "MemberExpression": 1,
+                "ObjectExpression": 1
+            }
+       ],
+       "key-spacing": [
+           "error",
+           {
+               "beforeColon": false,
+               "afterColon": true,
+               "align": { "on": "value"}
+           }
+       ],
+       "linebreak-style": ["error", "unix"],
+       "new-parens": "error",
+       "eqeqeq": "error",
+       "quotes": ["error", "single"],
+       "no-trailing-spaces":"error",
+       "space-before-blocks":["error", { "functions": "always", "keywords": "always", "classes": "never" }],
+       "comma-dangle":"error",
+       "comma-spacing":["error", {"before": false, "after": true }],
+       "space-before-function-paren": ["error",{"anonymous": "ignore", "named": "never"}],
+       "no-console": ["warn", { "allow": ["warn", "error", "log"] }],
+       "semi": ["error", "always"]
+   }
+}
