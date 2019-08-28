@@ -1,12 +1,9 @@
 const fs = require('fs'),
-    child_process = require('child_process'),
-    execSync = child_process.execSync,
     path = require('path');
 
 
 module.exports = function() {
-    const hashTable = {},
-        visitors = {};
+    const visitors = {};
 
     return {
         on:  on,
@@ -19,26 +16,17 @@ module.exports = function() {
         return new Promise((resolve)=> {
             let promises = [];
             fs.readdir(argPath, function(err, items) {
-                for(let i=0, p='', r='', hash=''; i<items.length; i++) {
+                for(let i=0, p=''; i<items.length; i++) {
                     p = path.join(argPath, items[i]);
 
                     try {
                         if(fs.lstatSync(p).isDirectory()) {
+                            notify('directory', p);
                             promises.push(self.run(p));
                             continue;
                         }
 
-                        r = execSync('md5sum -q "' + p + '"').toString();
-                        //r = r.split(' ')[0];
-                        hash = r.trim();
-
-                        if(!hashTable[hash]) {
-                            hashTable[hash] = [p];
-                            notify('newHash', p, hash);
-                        }else {
-                            hashTable[hash].push(p);
-                            notify('dupHash', hashTable[hash], hash);
-                        }
+                        notify('new', p);
                     }catch(e) {
                         notify('error', e);
                     }
@@ -47,8 +35,7 @@ module.exports = function() {
                 resolve(Promise.all(promises));
             });
         }).then(()=>{
-            notify('complete', hashTable);
-            return hashTable;
+            notify('complete');
         });
     }
 

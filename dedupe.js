@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 const fs = require('fs'),
     path = require('path'),
-    trav = require('./traverse'),
-    traverser = trav(),
-    tmpDir = '/tmp/Sega_Genesis/ROMs';
+    findDupes = require('./findDupes')(),
+    tmpDir = '/tmp/Sega_Genesis2/ROMs';
 
 if(process.argv.length <= 2) {
     console.log('Usage: ' + __filename + ' path/to/directory');
     process.exit(-1);
 }
 
-traverser.on('newHash', (filePath)=> {
+findDupes.on('newHash', (filePath)=> {
     process.stdout.write('New: \t' + filePath + '\n');
 
     let dest = path.join(tmpDir, path.basename(filePath));
@@ -23,7 +22,7 @@ traverser.on('newHash', (filePath)=> {
 }).on('dupHash', (filePath, hash)=> {
     process.stdout.write('Dupe! \t' + filePath + '\t' + hash + '\n');
 }).on('error', (e)=>{
-    process.stderror.write(e);
+    process.stderr.write(e);
 }).on('dirComplete', (argPath)=>{
     process.stdout.write('\n\n### DIR Traverse Complete ###\t' + argPath);
 }).run(process.argv[2]).then(()=>{

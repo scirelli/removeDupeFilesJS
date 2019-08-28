@@ -1,7 +1,6 @@
-const fs = require('fs'),
-    child_process = require('child_process'),
+const child_process = require('child_process'),
     execSync = child_process.execSync,
-    path = require('path');
+    traverser = require('./traverse')();
 
 
 module.exports = function() {
@@ -14,41 +13,28 @@ module.exports = function() {
     };
 
     function run(argPath) {
-        let self = this;
+        traverser.on('new', (filePath)=> {
+            try {
+                let hash = execSync('md5sum -q "' + filePath + '"').toString().trim();
 
-        return new Promise((resolve)=> {
-            let promises = [];
-            fs.readdir(argPath, function(err, items) {
-                for(let i=0, p='', r='', hash=''; i<items.length; i++) {
-                    p = path.join(argPath, items[i]);
-
-                    try {
-                        if(fs.lstatSync(p).isDirectory()) {
-                            promises.push(self.run(p));
-                            continue;
-                        }
-
-                        r = execSync('md5sum -q "' + p + '"').toString();
-                        //r = r.split(' ')[0];
-                        hash = r.trim();
-
-                        if(!hashTable[hash]) {
-                            hashTable[hash] = [p];
-                            notify('newHash', p, hash);
-                        }else {
-                            hashTable[hash].push(p);
-                            notify('dupHash', hashTable[hash], hash);
-                        }
-                    }catch(e) {
-                        notify('error', e);
-                    }
+                if(!hashTable[hash]) {
+                    hashTable[hash] = [filePath];
+                    notify('newHash', filePath, hash);
+                }else {
+                    hashTable[hash].push(filePath);
+                    notify('dupHash', hashTable[hash], hash);
                 }
-                notify('dirComplete', argPath);
-                resolve(Promise.all(promises));
-            });
-        }).then(()=>{
+            }catch(e) {
+                notify('error', e);
+            }
+        }).on('complete', ()=> {
             notify('complete', hashTable);
-            return hashTable;
+        }).on('error', (e)=>{
+            notify('error', e);
+        });
+
+        return traverser.run(argPath).then((hashTable)=>{
+            return hashTable();
         });
     }
 
