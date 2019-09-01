@@ -2,12 +2,16 @@
 const fs = require('fs'),
     path = require('path'),
     findDupes = require('./findDupes')(),
-    tmpDir = '/tmp/Sega_Genesis2/ROMs';
+    TMP_DIR = '/tmp/ROMs';
 
-if(process.argv.length <= 2) {
-    console.log('Usage: ' + __filename + ' path/to/directory');
+if(process.argv.length <= 3) {
+    console.log('Scans the given directory and sub-directories, and copies unique files to the specified folder.');
+    console.log('Usage: ' + __filename + ' path/to/directory path/to/place/uniqueFiles');
     process.exit(-1);
 }
+
+let romsToScan = process.argv[2],
+    tmpDir = process.argv[3] || TMP_DIR;
 
 findDupes.on('newHash', (filePath)=> {
     process.stdout.write('New: \t' + filePath + '\n');
@@ -25,6 +29,6 @@ findDupes.on('newHash', (filePath)=> {
     process.stderr.write(e);
 }).on('dirComplete', (argPath)=>{
     process.stdout.write('\n\n### DIR Traverse Complete ###\t' + argPath);
-}).run(process.argv[2]).then(()=>{
+}).run(romsToScan).then(()=>{
     process.stdout.write('DONE!');
 });
