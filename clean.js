@@ -18,18 +18,20 @@ if(process.argv.length <= 3) {
 }
 
 let pathToRoms = process.argv[2],
-    genesisRomsDB = process.argv[3],
+    romDB = process.argv[3],
     pathToPlaceUnknown = process.argv[4] || ROMs_UNKNOWN,
-    jsonObj = parser.parse(fs.readFileSync(genesisRomsDB).toString(), {
+    jsonObj = parser.parse(fs.readFileSync(romDB).toString(), {
         parseAttributeValue: true,
         ignoreAttributes:    false
     }).datafile.game.reduce((accum, item)=> {
         accum[item.rom['@_md5']] = item;
+        // accum[item.rom['@_sha1']] = item;
         return accum;
     }, {});
 
 traverser.on('new', (filePath)=> {
     let hash = execSync('md5sum -q "' + filePath + '"').toString().trim().toUpperCase(),
+        // hash = execSync('shasum "' + filePath + '"').toString().split(' ')[0].toUpperCase(),
         romInfo = jsonObj[hash],
         dest = '';
 
@@ -41,13 +43,15 @@ traverser.on('new', (filePath)=> {
         dest = path.join(path.dirname(filePath), romInfo.rom['@_name']);
     }
 
+    // console.log('ROM Info: ', romInfo);
+    // console.log(filePath, dest);
     fs.rename(filePath, dest, (err) => {
         if(err) console.error(err);
 
         process.stdout.write('Renamed: \t\'' + filePath + '\' to\tDest: \'' + dest + '\'\n');
     });
 }).on('error', (e)=>{
-    process.stderr.write(e);
+    process.stderr.write(e.toString());
 }).on('dirComplete', (argPath)=>{
     process.stdout.write('\n\n### DIR Traverse Complete ###\t' + argPath);
 }).run(pathToRoms).then(()=>{
