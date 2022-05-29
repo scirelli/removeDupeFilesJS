@@ -34,7 +34,7 @@ module.exports = function() {
         });
 
         return traverser.run(argPath).then((hashTable)=>{
-            return hashTable();
+            return hashTable;
         });
     }
 

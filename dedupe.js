@@ -26,7 +26,7 @@ findDupes.on('newHash', (filePath)=> {
 }).on('dupHash', (filePath, hash)=> {
     process.stdout.write('Dupe! \t' + filePath + '\t' + hash + '\n');
 }).on('error', (e)=>{
-    process.stderr.write(e);
+    process.stderr.write(e.toString());
 }).on('dirComplete', (argPath)=>{
     process.stdout.write('\n\n### DIR Traverse Complete ###\t' + argPath);
 }).run(romsToScan).then(()=>{
