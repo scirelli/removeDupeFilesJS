@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/scirelli/removeDupeFilesJS#readme",
   "dependencies": {
-    "fast-xml-parser": "^3.12.20"
+    "fast-xml-parser": "^4.2.4"
   }
 }
